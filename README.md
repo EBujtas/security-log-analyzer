@@ -1,0 +1,150 @@
+# Security Log Analyzer
+
+A Python-based authentication log analysis and threat detection project with an interactive Security Operations Center (SOC) dashboard.
+
+This project parses authentication events, applies detection rules, generates security alerts, exports structured reports, and presents the results through a Streamlit dashboard.
+
+## Features
+
+- Parses authentication log files
+- Identifies successful and failed login attempts
+- Tracks authentication activity by source IP
+- Identifies targeted user accounts
+- Uses time-window based detection
+- Detects possible brute-force authentication activity
+- Detects repeated authentication failures
+- Detects failed-login attempts followed by successful authentication
+- Separates raw security events from generated alerts
+- Exports event and alert data to CSV
+- Provides an interactive SOC-style dashboard
+- Allows investigation of individual source IP addresses
+
+## Detection Rules
+
+### Possible Brute Force — HIGH
+
+Generates a HIGH severity alert when five or more failed authentication attempts from the same source IP occur within five minutes.
+
+### Repeated Authentication Failures — MEDIUM
+
+Generates a MEDIUM severity alert when three or more failed authentication attempts from the same source IP occur within five minutes.
+
+### Failure Followed by Success — NOTICE
+
+Generates a NOTICE when a successful authentication occurs from a source IP that generated failed authentication attempts during the previous five minutes.
+
+These rules are intended for educational purposes and demonstrate basic security detection concepts. An alert indicates activity that may warrant investigation; it does not by itself establish malicious activity.
+
+## Project Architecture
+
+```text
+sample_auth.log
+       |
+       v
+   analyzer.py
+       |
+       +----------------------+
+       |                      |
+       v                      v
+security_report.csv       alerts.csv
+       |                      |
+       +----------+-----------+
+                  |
+                  v
+             dashboard.py
+                  |
+                  v
+          Streamlit SOC Dashboard
+```
+
+## Technologies
+
+- Python
+- Streamlit
+- pandas
+- CSV
+- Python datetime
+- Python collections
+
+## Installation
+
+Clone the repository:
+
+```bash
+git clone YOUR_REPOSITORY_URL
+cd security-log-analyzer
+```
+
+Install the required packages:
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+## Running the Analyzer
+
+Run:
+
+```bash
+python analyzer.py
+```
+
+The analyzer reads:
+
+```text
+sample_auth.log
+```
+
+and generates:
+
+```text
+security_report.csv
+alerts.csv
+```
+
+## Running the Dashboard
+
+After running the analyzer:
+
+```bash
+python -m streamlit run dashboard.py
+```
+
+Then open the local address provided by Streamlit in your web browser.
+
+## Example Detection
+
+Example authentication activity:
+
+```text
+LOGIN_FAILED
+LOGIN_FAILED
+LOGIN_FAILED
+LOGIN_FAILED
+LOGIN_FAILED
+```
+
+Five failed authentication attempts from the same source IP within the configured time window can generate:
+
+```text
+HIGH
+Possible Brute Force
+5 failed authentication attempts within 27 seconds
+```
+
+## Security Concepts Demonstrated
+
+This project demonstrates introductory concepts related to:
+
+- Security log analysis
+- Authentication monitoring
+- Security event correlation
+- Detection engineering
+- Time-window detection
+- Alert severity classification
+- SOC investigation workflows
+- Security data visualization
+
+## Disclaimer
+
+This project is an educational cybersecurity tool and is not intended to replace a production SIEM, intrusion detection system, or professional security monitoring platform.
