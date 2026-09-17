@@ -4,6 +4,12 @@ A Python-based authentication log analysis and threat detection project with an 
 
 This project parses authentication events, applies detection rules, generates security alerts, exports structured reports, and presents the results through a Streamlit dashboard.
 
+## SOC Dashboard
+
+![Security Log Analyzer SOC Dashboard](screenshots/soc-dashboard.png)
+
+The dashboard provides a visual overview of authentication activity and security detections, including event counts, alert severity, failed authentication activity, targeted accounts, and source-IP investigation.
+
 ## Features
 
 - Parses authentication log files
@@ -144,6 +150,23 @@ This project demonstrates introductory concepts related to:
 - Alert severity classification
 - SOC investigation workflows
 - Security data visualization
+
+## What I Learned
+
+Building this project provided hands-on experience with:
+
+- Parsing and analyzing authentication log data with Python
+- Using dictionaries, lists, functions, and Python collections
+- Working with timestamps and time-window detection
+- Separating raw security events from generated security alerts
+- Developing basic detection logic for authentication activity
+- Correlating multiple events to identify suspicious patterns
+- Exporting structured security data to CSV
+- Using pandas for security data analysis
+- Building an interactive dashboard with Streamlit
+- Using Git and GitHub for source control and project documentation
+
+This project also helped demonstrate the difference between an individual security event and a detection generated from multiple correlated events.
 
 ## Disclaimer
 
