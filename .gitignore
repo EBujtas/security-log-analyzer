@@ -17,3 +17,9 @@ Thumbs.db
 # Generated reports
 security_report.csv
 alerts.csv
+
+# Local security database
+security.db
+security.db-journal
+security.db-shm
+security.db-wal

@@ -2,6 +2,12 @@ from collections import Counter, defaultdict
 from datetime import datetime, timedelta
 import csv
 
+from database import (
+    initialize_database,
+    insert_event,
+    insert_alert
+)
+
 LOG_FILE = "sample_auth.log"
 REPORT_FILE = "security_report.csv"
 ALERT_FILE = "alerts.csv"
@@ -440,12 +446,34 @@ def display_results(events, alerts):
 
 def main():
 
+    print("\nInitializing security database...")
+
+    initialize_database()
+
+    print("Reading authentication logs...")
+
     events = parse_log(LOG_FILE)
+
+    print(f"Loaded {len(events)} events.")
+
+    print("Running detection engine...")
 
     alerts = detect_threats(events)
 
-    create_event_report(events)
+    print(f"Generated {len(alerts)} alerts.")
 
+    print("Saving events to database...")
+
+    for event in events:
+        insert_event(event)
+
+    print("Saving alerts to database...")
+
+    for alert in alerts:
+        insert_alert(alert)
+
+    # Keep CSV exports for compatibility
+    create_event_report(events)
     create_alert_report(alerts)
 
     display_results(events, alerts)
