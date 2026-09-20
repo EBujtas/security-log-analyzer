@@ -11,6 +11,18 @@ st.set_page_config(
     layout="wide"
 )
 
+# ---------------------------------------------------------
+# LIVE DASHBOARD REFRESH
+# ---------------------------------------------------------
+
+REFRESH_SECONDS = 5
+
+st.markdown(
+    f"""
+    <meta http-equiv="refresh" content="{REFRESH_SECONDS}">
+    """,
+    unsafe_allow_html=True
+)
 
 # ---------------------------------------------------------
 # DATABASE FUNCTIONS
@@ -80,8 +92,13 @@ alerts = load_alerts()
 # ---------------------------------------------------------
 
 st.title("🛡️ Security Log Analyzer")
-st.caption("SOC Authentication Monitoring Dashboard — V6")
+st.caption("SOC Authentication Monitoring Dashboard — V7")
 
+st.success("● LIVE MONITORING ACTIVE")
+
+st.caption(
+    f"Dashboard refreshes every {REFRESH_SECONDS} seconds."
+)
 
 # ---------------------------------------------------------
 # DATE FILTERS
