@@ -18,3 +18,15 @@
 2026-09-20 17:30:34 LOGIN_FAILED user=testuser ip=192.168.1.50
 2026-09-20 17:30:42 LOGIN_FAILED user=testuser ip=192.168.1.50
 2026-09-20 17:32:10 LOGIN_FAILED user=jsmith ip=192.168.1.75
+2026-09-20 17:30:42 LOGIN_FAILED user=testuser ip=192.168.1.50
+2026-09-25 20:10:01 LOGIN_FAILED user=v7test ip=192.168.1.99
+2026-09-25 20:30:01 LOGIN_FAILED user=debugtest ip=192.168.1.200
+2026-09-25 20:30:01 LOGIN_FAILED user=debugtest ip=192.168.1.200
+Add-Content .\sample_auth.log "2026-09-25 20:30:10 LOGIN_FAILED user=debugtest ip=192.168.1.200"
+Add-Content .\sample_auth.log "2026-09-25 20:30:20 LOGIN_FAILED user=debugtest ip=192.168.1.200"
+Add-Content .\sample_auth.log "2026-09-25 20:30:30 LOGIN_FAILED user=debugtest ip=192.168.1.200"2026-09-25 20:30:10 LOGIN_FAILED user=debugtest ip=192.168.1.200
+2026-09-25 20:30:20 LOGIN_FAILED user=debugtest ip=192.168.1.200
+2026-09-25 20:30:30 LOGIN_FAILED user=debugtest ip=192.168.1.200
+2026-09-25 20:30:40 LOGIN_FAILED user=debugtest ip=192.168.1.200
+2026-09-25 20:31:00 LOGIN_SUCCESS user=debugtest ip=192.168.1.200
+2026-09-25 20:35:01 LOGIN_FAILED user=livetest ip=192.168.1.210

@@ -266,7 +266,11 @@ def process_line(line):
 
 def monitor_log():
     """
-    Continuously monitor the log for newly appended lines.
+    Continuously check the log for newly appended lines.
+
+    The file is opened only long enough to read new data,
+    then closed again. This avoids keeping the log locked
+    on Windows.
     """
 
     initialize_database()
@@ -282,29 +286,52 @@ def monitor_log():
     print("Press Ctrl+C to stop.\n")
 
     try:
-        with open(LOG_FILE, "r", encoding="utf-8") as log_file:
 
-            # Move to the end so existing events
-            # aren't processed again.
+        # Find the current end of the log.
+        # Existing entries will not be processed again.
+        with open(
+            LOG_FILE,
+            "r",
+            encoding="utf-8"
+        ) as log_file:
+
             log_file.seek(0, 2)
+            last_position = log_file.tell()
 
-            while True:
+        while True:
 
-                line = log_file.readline()
+            # Reopen the file for each check.
+            # It closes immediately after reading.
+            with open(
+                LOG_FILE,
+                "r",
+                encoding="utf-8"
+            ) as log_file:
 
-                if line:
+                log_file.seek(last_position)
+
+                new_lines = log_file.readlines()
+
+                last_position = log_file.tell()
+
+            for line in new_lines:
+
+                if line.strip():
                     process_line(line)
 
-                else:
-                    time.sleep(CHECK_INTERVAL_SECONDS)
+            time.sleep(
+                CHECK_INTERVAL_SECONDS
+            )
 
     except FileNotFoundError:
 
-        print(f"\nERROR: Could not find {LOG_FILE}")
+        print(
+            f"\n[ERROR] Could not find {LOG_FILE}"
+        )
 
     except KeyboardInterrupt:
 
-        print("\n\nCollector stopped.")
+        print("\nCollector stopped.")
 
 
 if __name__ == "__main__":

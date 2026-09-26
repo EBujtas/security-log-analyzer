@@ -25,6 +25,51 @@ The dashboard provides a visual overview of authentication activity and security
 - Provides an interactive SOC-style dashboard
 - Allows investigation of individual source IP addresses
 
+### V7 — Continuous Security Monitoring
+
+Version 7 introduces continuous log collection and live dashboard monitoring.
+
+Features include:
+
+- Continuous authentication log monitoring
+- Automatic processing of newly generated log events
+- Persistent event storage using SQLite
+- Real-time security detection
+- Duplicate alert protection
+- HIGH brute-force detection
+- MEDIUM repeated authentication failure detection
+- NOTICE detection for successful authentication following failures
+- Historical Year / Month / Day filtering
+- Live SOC dashboard
+- Configurable dashboard refresh
+- Manual dashboard refresh
+- Separate collection, detection, storage, and visualization components
+
+## V7 Architecture
+
+```text
+Authentication Log
+        |
+        v
+   collector.py
+        |
+        +---- Parse Events
+        |
+        +---- Detection Engine
+        |
+        v
+   security.db
+     /      \
+    /        \
+ Events      Alerts
+    \          /
+     \        /
+      v      v
+    dashboard.py
+         |
+         v
+   SOC Dashboard
+
 ## Detection Rules
 
 ### Possible Brute Force — HIGH

@@ -12,17 +12,42 @@ st.set_page_config(
 )
 
 # ---------------------------------------------------------
-# LIVE DASHBOARD REFRESH
+# LIVE DASHBOARD CONTROLS
 # ---------------------------------------------------------
 
-REFRESH_SECONDS = 5
+st.sidebar.header("Live Monitoring")
 
-st.markdown(
-    f"""
-    <meta http-equiv="refresh" content="{REFRESH_SECONDS}">
-    """,
-    unsafe_allow_html=True
+auto_refresh = st.sidebar.toggle(
+    "Auto Refresh",
+    value=True
 )
+
+refresh_options = {
+    "10 seconds": 10,
+    "30 seconds": 30,
+    "1 minute": 60,
+    "5 minutes": 300
+}
+
+refresh_choice = st.sidebar.selectbox(
+    "Refresh Rate",
+    list(refresh_options.keys()),
+    index=1
+)
+
+REFRESH_SECONDS = refresh_options[refresh_choice]
+
+if auto_refresh:
+    st.markdown(
+        f"""
+        <meta http-equiv="refresh"
+        content="{REFRESH_SECONDS}">
+        """,
+        unsafe_allow_html=True
+    )
+
+if st.sidebar.button("Refresh Now"):
+    st.rerun()
 
 # ---------------------------------------------------------
 # DATABASE FUNCTIONS
@@ -94,12 +119,21 @@ alerts = load_alerts()
 st.title("🛡️ Security Log Analyzer")
 st.caption("SOC Authentication Monitoring Dashboard — V7")
 
-st.success("● LIVE MONITORING ACTIVE")
+if auto_refresh:
 
-st.caption(
-    f"Dashboard refreshes every {REFRESH_SECONDS} seconds."
-)
+    st.success("● LIVE MONITORING ACTIVE")
 
+    st.caption(
+        f"Automatic refresh: every {refresh_choice}"
+    )
+
+else:
+
+    st.warning("● AUTO REFRESH PAUSED")
+
+    st.caption(
+        "Use Refresh Now to update the dashboard."
+    )
 # ---------------------------------------------------------
 # DATE FILTERS
 # ---------------------------------------------------------

@@ -361,7 +361,7 @@ def display_results(events, alerts):
     )
 
     print("\n" + "=" * 65)
-    print("                 SECURITY LOG ANALYZER V5")
+    print("                 SECURITY LOG ANALYZER V7")
     print("=" * 65)
 
     print("\nEVENT SUMMARY")
