@@ -105,3 +105,63 @@ def insert_alert(alert):
 
     connection.commit()
     connection.close()
+
+# ---------------------------------------------------------
+# WINDOWS EVENT STORAGE - V8
+# ---------------------------------------------------------
+
+def initialize_windows_events_table():
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS windows_events (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            timestamp TEXT NOT NULL,
+            windows_event_id INTEGER NOT NULL,
+            record_id INTEGER NOT NULL UNIQUE,
+            username TEXT,
+            source_ip TEXT,
+            logon_type TEXT,
+            event_type TEXT NOT NULL,
+            source TEXT NOT NULL DEFAULT 'WINDOWS'
+        )
+    """)
+
+    connection.commit()
+    connection.close()
+
+
+def insert_windows_event(event):
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        INSERT OR IGNORE INTO windows_events (
+            timestamp,
+            windows_event_id,
+            record_id,
+            username,
+            source_ip,
+            logon_type,
+            event_type,
+            source
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    """, (
+        event["timestamp"],
+        event["windows_event_id"],
+        event["record_id"],
+        event["username"],
+        event["source_ip"],
+        event["logon_type"],
+        event["event_type"],
+        "WINDOWS"
+    ))
+
+    inserted = cursor.rowcount > 0
+
+    connection.commit()
+    connection.close()
+
+    return inserted

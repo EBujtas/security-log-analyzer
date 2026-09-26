@@ -23,3 +23,7 @@ security.db
 security.db-journal
 security.db-shm
 security.db-wal
+
+# Windows security telemetry
+windows_auth.csv
+windows_test.csv

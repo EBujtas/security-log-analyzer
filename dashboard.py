@@ -108,8 +108,51 @@ def load_alerts():
 # LOAD DATA
 # ---------------------------------------------------------
 
+def load_windows_events():
+    connection = sqlite3.connect(DATABASE_FILE)
+
+    try:
+        df = pd.read_sql_query(
+            """
+            SELECT
+                timestamp,
+                windows_event_id,
+                record_id,
+                username,
+                source_ip,
+                logon_type,
+                event_type,
+                source
+            FROM windows_events
+            ORDER BY timestamp DESC
+            """,
+            connection
+        )
+
+    except Exception:
+        df = pd.DataFrame()
+
+    finally:
+        connection.close()
+
+    if not df.empty:
+        df["timestamp"] = pd.to_datetime(
+            df["timestamp"]
+        )
+
+    return df
+
 events = load_events()
 alerts = load_alerts()
+windows_events = load_windows_events()
+
+WINDOWS_LOGON_TYPES = {
+    "2": "Interactive",
+    "3": "Network",
+    "7": "Unlock",
+    "10": "Remote Desktop",
+    "11": "Cached Interactive"
+}
 
 
 # ---------------------------------------------------------
@@ -117,7 +160,7 @@ alerts = load_alerts()
 # ---------------------------------------------------------
 
 st.title("🛡️ Security Log Analyzer")
-st.caption("SOC Authentication Monitoring Dashboard — V7")
+st.caption("V8 — Windows Authentication Monitoring and Detection")
 
 if auto_refresh:
 
@@ -244,6 +287,12 @@ else:
 
 st.divider()
 
+st.header("Lab Detection Environment")
+st.caption(
+    "Simulated authentication events used to test "
+    "detection rules and alert generation."
+)
+
 st.subheader("SOC Overview")
 
 successful_logins = len(
@@ -281,6 +330,97 @@ metric4.metric(
     "Security Alerts",
     total_alerts
 )
+# ---------------------------------------------------------
+# WINDOWS SECURITY TELEMETRY - V8
+# ---------------------------------------------------------
+
+st.header("Live Windows Security Telemetry")
+
+st.caption(
+    "Authentication telemetry collected from the "
+    "Windows Security Event Log."
+)
+
+mask_windows_identity = st.toggle(
+    "Mask Windows usernames for display",
+    value=True,
+    help=(
+        "Hides Windows account names in this dashboard view. "
+        "The stored database records are not changed."
+    )
+)
+
+if windows_events.empty:
+
+    st.info(
+        "No Windows authentication events "
+        "have been imported yet."
+    )
+
+else:
+
+    windows_display = windows_events.copy()
+
+    windows_display["logon_description"] = (
+        windows_display["logon_type"]
+        .astype(str)
+        .map(WINDOWS_LOGON_TYPES)
+        .fillna("Other")
+    )
+
+    if mask_windows_identity:
+        windows_display["username"] = "REDACTED"
+
+    windows_success = (
+        windows_events["event_type"]
+        == "LOGIN_SUCCESS"
+    ).sum()
+
+    windows_failed = (
+        windows_events["event_type"]
+        == "LOGIN_FAILED"
+    ).sum()
+
+    col1, col2, col3 = st.columns(3)
+
+    col1.metric(
+        "Windows Events",
+        len(windows_events)
+    )
+
+    col2.metric(
+        "Successful Logins",
+        windows_success
+    )
+
+    col3.metric(
+        "Failed Logins",
+        windows_failed
+    )
+
+    st.subheader("Telemetry Source")
+
+    st.write("Source: Windows Security Event Log")
+    st.write("Event 4624: Successful authentication")
+    st.write("Event 4625: Failed authentication")
+
+    st.subheader("Windows Authentication Events")
+
+    display_columns = [
+        "timestamp",
+        "event_type",
+        "username",
+        "source_ip",
+        "logon_type",
+        "logon_description",
+        "record_id"
+    ]
+
+    st.dataframe(
+        windows_display[display_columns],
+        use_container_width=True,
+        hide_index=True
+    )
 
 
 # ---------------------------------------------------------

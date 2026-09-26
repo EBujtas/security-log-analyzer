@@ -108,6 +108,66 @@ security_report.csv       alerts.csv
           Streamlit SOC Dashboard
 ```
 
+## V8 — Windows Security Event Integration
+
+Version 8 expands the Security Log Analyzer from simulated authentication logs to real Windows Security Event Log telemetry.
+
+### New Features
+
+- Windows Security Event Log collection
+- Event ID 4624 successful logon monitoring
+- Event ID 4625 failed logon support
+- PowerShell-based Windows event exporter
+- Automatic Python collection controller
+- CSV-to-SQLite event ingestion
+- Windows Record ID duplicate protection
+- Windows authentication detection engine
+- Remote-source filtering
+- Windows logon type identification
+- Live Windows telemetry dashboard
+- Separation of simulated lab data and real Windows telemetry
+- Privacy masking for Windows usernames in the dashboard
+
+### Windows Events
+
+The V8 collector supports:
+
+| Event ID | Description |
+| --- | --- |
+| 4624 | Successful Windows authentication |
+| 4625 | Failed Windows authentication |
+
+Relevant Windows logon types include:
+
+| Logon Type | Description |
+| --- | --- |
+| 2 | Interactive |
+| 3 | Network |
+| 7 | Unlock |
+| 10 | Remote Desktop |
+| 11 | Cached Interactive |
+
+### V8 Architecture
+
+```text
+Windows Security Event Log
+          |
+          v
+windows_exporter.ps1
+          |
+          v
+   windows_auth.csv
+          |
+          v
+ windows_importer.py
+       /        \
+      v          v
+security.db  windows_detection.py
+      \          /
+       \        /
+        v      v
+       dashboard.py
+
 ## Technologies
 
 - Python
